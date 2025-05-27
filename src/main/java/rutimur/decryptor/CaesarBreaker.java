@@ -1,11 +1,43 @@
 package rutimur.decryptor;
 
 public class CaesarBreaker {
-    // Частоты букв русского языка (без ё), в порядке: а,б,в,г,д,е,ж,з,и,й,к,л,м,н,о,п,р,с,т,у,ф,х,ц,ч,ш,щ,ъ,ы,ь,э,ю,я
+    // Частоты букв русского языка (на основе предоставленной таблицы, дополнены минимальными значениями)
     private static final double[] RUS_FREQ = {
-        0.0801, 0.0159, 0.0454, 0.0170, 0.0298, 0.0845, 0.0094, 0.0165, 0.0735, 0.0121, 0.0349, 0.0440, 0.0321, 0.0670, 0.1097, 0.0281, 0.0473, 0.0547, 0.0632, 0.0262, 0.0026, 0.0097, 0.0048, 0.0144, 0.0073, 0.0036, 0.0004, 0.0189, 0.0174, 0.0032, 0.0064, 0.0190
+            0.062,  // А
+            0.014,  // Б
+            0.038,  // В
+            0.013,  // Г
+            0.025,  // Д
+            0.072,
+            0.005,// Е, Ё
+            0.007,  // Ж
+            0.016,  // З
+            0.062,  // И
+            0.010,  // Й
+            0.028,  // К
+            0.035,  // Л
+            0.026,  // М
+            0.053,  // Н
+            0.090,  // О
+            0.023,  // П
+            0.040,  // Р
+            0.045,  // С
+            0.053,  // Т
+            0.021,  // У
+            0.002,  // Ф
+            0.009,  // Х
+            0.003,  // Ц
+            0.012,  // Ч
+            0.006,  // Ш
+            0.003,  // Щ
+            0.014,  // Ъ
+            0.016,  // Ы
+            0.014,  // Ь
+            0.003,  // Э
+            0.006,  // Ю
+            0.018   // Я
     };
-    private static final String RUS_ALPHABET = "абвгдежзийклмнопрстуфхцчшщъыьэюя";
+    private static final String RUS_ALPHABET = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 
     public static BreakResult breakRussianCaesar(String cipherText) {
         cipherText = cipherText.toLowerCase();
@@ -24,24 +56,42 @@ public class CaesarBreaker {
         return new BreakResult(bestPlain, bestKey);
     }
 
+//    private static String decrypt(String text, int key) {
+//        StringBuilder sb = new StringBuilder();
+//        int n = RUS_ALPHABET.length();
+//        for (char c : text.toCharArray()) {
+//            int idx = RUS_ALPHABET.indexOf(c);
+//            if (idx == -1) {
+//                sb.append(c);
+//            } else {
+//                int shift =  (idx + key) % n;
+//                sb.append(RUS_ALPHABET.charAt(shift));
+//            }
+//        }
+//        return sb.toString();
+//}
+
+
     private static String decrypt(String text, int key) {
+        if (text == null || text.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
         int n = RUS_ALPHABET.length();
         for (char c : text.toCharArray()) {
             int idx = RUS_ALPHABET.indexOf(c);
             if (idx == -1) {
-                sb.append(c);
+                sb.append(c); // если вдруг встретился неалфавитный символ
             } else {
-                int shift = (idx - key + n) % n;
+                int shift =(idx - key + n) % n;
                 sb.append(RUS_ALPHABET.charAt(shift));
             }
         }
         return sb.toString();
     }
 
+
     // Метод наименьших квадратов
     private static double calcScore(String text) {
-        int[] counts = new int[32];
+        int[] counts = new int[33];
         int total = 0;
         for (char c : text.toCharArray()) {
             int idx = RUS_ALPHABET.indexOf(c);
@@ -67,4 +117,4 @@ public class CaesarBreaker {
             this.key = key;
         }
     }
-} 
+}

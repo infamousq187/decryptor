@@ -57,13 +57,13 @@ public class DecryptorGUI extends JFrame {
             String input = inputArea.getText();
             if (!isValidInput(input)) {
                 resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: текст должен содержать только буквы кириллицы или латиницы.");
+                resultArea.setText("Ошибка: текст содержит недопустимые символы.");
                 return;
             }
             String clean = TextPreprocessor.preprocess(input);
-            if (clean.isEmpty()) {
+            if (clean.isEmpty() && input.trim().isEmpty()) {
                 resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: текст не содержит букв.");
+                resultArea.setText("Ошибка: текст пуст.");
                 return;
             }
             int key;
@@ -74,7 +74,15 @@ public class DecryptorGUI extends JFrame {
                 resultArea.setText("Ошибка: введите целое число для ключа.");
                 return;
             }
+            // Проверка диапазона ключа
             boolean cyrillic = isCyrillic(clean);
+            int minKey = cyrillic ? -32 : -26;
+            int maxKey = cyrillic ? 32 : 26;
+            if (key < minKey || key > maxKey) {
+                resultArea.setForeground(Color.RED);
+                resultArea.setText("Ошибка: ключ должен быть в диапазоне [" + minKey + "; " + maxKey + "].");
+                return;
+            }
             int normKey = cyrillic ? KeyNormalizer.normalizeCyrillicKey(key) : KeyNormalizer.normalizeLatinKey(key);
             String cipher = CaesarCipher.encrypt(clean, normKey);
             String formatted = TextFormatter.formatByFive(cipher);
@@ -110,13 +118,13 @@ public class DecryptorGUI extends JFrame {
             String input = inputArea.getText();
             if (!isValidInput(input)) {
                 resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: текст должен содержать только буквы кириллицы или латиницы.");
+                resultArea.setText("Ошибка: текст содержит недопустимые символы.");
                 return;
             }
             String clean = TextPreprocessor.preprocess(input);
-            if (clean.isEmpty()) {
+            if (clean.isEmpty() && input.trim().isEmpty()) {
                 resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: текст не содержит букв.");
+                resultArea.setText("Ошибка: текст пуст.");
                 return;
             }
             int key;
@@ -127,7 +135,15 @@ public class DecryptorGUI extends JFrame {
                 resultArea.setText("Ошибка: введите целое число для ключа.");
                 return;
             }
+            // Проверка диапазона ключа
             boolean cyrillic = isCyrillic(clean);
+            int minKey = cyrillic ? -32 : -26;
+            int maxKey = cyrillic ? 32 : 26;
+            if (key < minKey || key > maxKey) {
+                resultArea.setForeground(Color.RED);
+                resultArea.setText("Ошибка: ключ должен быть в диапазоне [" + minKey + "; " + maxKey + "].");
+                return;
+            }
             int normKey = cyrillic ? KeyNormalizer.normalizeCyrillicKey(key) : KeyNormalizer.normalizeLatinKey(key);
             String plain = CaesarCipher.decrypt(clean, normKey);
             String formatted = TextFormatter.formatByFive(plain);
@@ -160,13 +176,13 @@ public class DecryptorGUI extends JFrame {
             String input = inputArea.getText();
             if (!isValidInput(input)) {
                 resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: текст должен содержать только буквы кириллицы или латиницы.");
+                resultArea.setText("Ошибка: текст содержит недопустимые символы.");
                 return;
             }
             String clean = TextPreprocessor.preprocess(input);
-            if (clean.isEmpty()) {
+            if (clean.isEmpty() && input.trim().isEmpty()) {
                 resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: текст не содержит букв.");
+                resultArea.setText("Ошибка: текст пуст.");
                 return;
             }
             CaesarBreaker.BreakResult result = CaesarBreaker.breakRussianCaesar(clean);
@@ -184,12 +200,13 @@ public class DecryptorGUI extends JFrame {
         return false;
     }
 
-    // Проверка: только буквы кириллицы или латиницы, пробелы и знаки препинания запрещены
+    // Проверка: допускаются буквы кириллицы, латиницы, пробелы и знаки препинания
     private boolean isValidInput(String text) {
         if (text == null || text.isEmpty()) return false;
         String replaced = text.replace('Ё', 'Е').replace('ё', 'е');
         for (char c : replaced.toCharArray()) {
-            if (!((c >= 'а' && c <= 'я') || (c >= 'А' && c <= 'Я') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == 'ё' || c == 'Ё' || c == ' ')) {
+            if (!((c >= 'а' && c <= 'я') || (c >= 'А' && c <= 'Я') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                    c == ' ' || c == ',' || c == '.' || c == '!' || c == '?' || c == '-' || c == ':' || c == ';')) {
                 return false;
             }
         }
@@ -199,4 +216,4 @@ public class DecryptorGUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new DecryptorGUI().setVisible(true));
     }
-} 
+}

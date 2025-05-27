@@ -39,7 +39,7 @@ public class CaesarCipher {
     // Определяет алфавит по первой букве текста
     private static String detectAlphabet(String text) {
         for (char c : text.toCharArray()) {
-            if (CYRILLIC_NO_E.indexOf(c) != -1) return CYRILLIC_NO_E;
+            if (CYRILLIC.indexOf(c) != -1) return CYRILLIC;
             if (LATIN.indexOf(c) != -1) return LATIN;
         }
         // По умолчанию латиница
