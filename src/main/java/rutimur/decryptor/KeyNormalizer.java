@@ -16,4 +16,13 @@ public class KeyNormalizer {
         int mod = key % 26;
         return mod < 0 ? mod + 26 : mod;
     }
+
+    public static int normalizeKey(int key) {
+        // Для кириллицы (32 буквы)
+        if (key >= -32 && key <= 32) {
+            return (key + 32) % 32;
+        }
+        // Для латиницы (26 букв)
+        return (key + 26) % 26;
+    }
 } 

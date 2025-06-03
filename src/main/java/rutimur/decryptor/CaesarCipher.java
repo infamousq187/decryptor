@@ -9,14 +9,28 @@ public class CaesarCipher {
      * Шифрует текст шифром Цезаря
      */
     public static String encrypt(String text, int key) {
-        return shift(text, key, true);
+        StringBuilder result = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            if (c >= 'а' && c <= 'я') {
+                int offset = c - 'а';
+                int newOffset = (offset + key + 32) % 32;
+                result.append((char) ('а' + newOffset));
+            } else if (c >= 'a' && c <= 'z') {
+                int offset = c - 'a';
+                int newOffset = (offset + key + 26) % 26;
+                result.append((char) ('a' + newOffset));
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
     /**
      * Дешифрует текст шифром Цезаря
      */
     public static String decrypt(String text, int key) {
-        return shift(text, key, false);
+        return encrypt(text, -key);
     }
 
     private static String shift(String text, int key, boolean encrypt) {
