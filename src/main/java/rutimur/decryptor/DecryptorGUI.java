@@ -202,15 +202,7 @@ public class DecryptorGUI extends JFrame {
 
     // Проверка: допускаются буквы кириллицы, латиницы, пробелы и знаки препинания
     private boolean isValidInput(String text) {
-        if (text == null || text.isEmpty()) return false;
-        String replaced = text.replace('Ё', 'Е').replace('ё', 'е');
-        for (char c : replaced.toCharArray()) {
-            if (!((c >= 'а' && c <= 'я') || (c >= 'А' && c <= 'Я') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                    c == ' ' || c == ',' || c == '.' || c == '!' || c == '?' || c == '-' || c == ':' || c == ';')) {
-                return false;
-            }
-        }
-        return true;
+        return true; // Разрешаем ввод любых символов, фильтрация происходит в TextPreprocessor
     }
 
     public static void main(String[] args) {
