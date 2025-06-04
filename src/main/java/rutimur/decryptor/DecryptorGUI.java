@@ -74,17 +74,7 @@ public class DecryptorGUI extends JFrame {
                 resultArea.setText("Ошибка: введите целое число для ключа.");
                 return;
             }
-            // Проверка диапазона ключа
-            boolean cyrillic = isCyrillic(clean);
-            int minKey = cyrillic ? -32 : -26;
-            int maxKey = cyrillic ? 32 : 26;
-            if (key < minKey || key > maxKey) {
-                resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: ключ должен быть в диапазоне [" + minKey + "; " + maxKey + "].");
-                return;
-            }
-            int normKey = cyrillic ? KeyNormalizer.normalizeCyrillicKey(key) : KeyNormalizer.normalizeLatinKey(key);
-            String cipher = CaesarCipher.encrypt(clean, normKey);
+            String cipher = CaesarCipher.encrypt(clean, key);
             String formatted = TextFormatter.formatByFive(cipher);
             resultArea.setForeground(Color.BLACK);
             resultArea.setText(formatted);
@@ -135,17 +125,7 @@ public class DecryptorGUI extends JFrame {
                 resultArea.setText("Ошибка: введите целое число для ключа.");
                 return;
             }
-            // Проверка диапазона ключа
-            boolean cyrillic = isCyrillic(clean);
-            int minKey = cyrillic ? -32 : -26;
-            int maxKey = cyrillic ? 32 : 26;
-            if (key < minKey || key > maxKey) {
-                resultArea.setForeground(Color.RED);
-                resultArea.setText("Ошибка: ключ должен быть в диапазоне [" + minKey + "; " + maxKey + "].");
-                return;
-            }
-            int normKey = cyrillic ? KeyNormalizer.normalizeCyrillicKey(key) : KeyNormalizer.normalizeLatinKey(key);
-            String plain = CaesarCipher.decrypt(clean, normKey);
+            String plain = CaesarCipher.decrypt(clean, key);
             String formatted = TextFormatter.formatByFive(plain);
             resultArea.setForeground(Color.BLACK);
             resultArea.setText(formatted);
